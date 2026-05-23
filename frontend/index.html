@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sistema Llantería Fijo</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="login-wrap">
+
+    <div class="login-card">
+
+      <div class="brand">
+        <h1>Sistema Llantería</h1>
+        <p>Versión fija Node.js + SQLite</p>
+      </div>
+
+      <label>Usuario</label>
+      <input id="usuario" placeholder="admin" />
+
+      <label>Clave</label>
+      <input id="clave" type="password" placeholder="1234" />
+
+      <button class="btn-primary" onclick="login()">
+        Ingresar
+      </button>
+
+      <div id="loginMsg" class="msg"></div>
+
+    </div>
+
+  </div>
+
+  <!-- APP -->
+  <div id="appScreen" class="app hidden">
+
+    <!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="sidebar-brand">
+    <h2>🛞 Llantería</h2>
+    <p>Sistema de gestión</p>
+  </div>
+
+  <button onclick="abrirModulo('inicio')">
+    🏠 Dashboard
+  </button>
+
+  <button onclick="abrirModulo('ingreso')">
+    ➕ Ingreso
+  </button>
+
+  <button onclick="abrirModulo('calibracion')">
+    🛞 Llantería
+  </button>
+
+  <button onclick="abrirModulo('inventario')">
+    📦 Inventario
+  </button>
+
+  <button onclick="abrirModulo('bodega')">
+    🚛 Unidad
+  </button>
+
+  <button onclick="abrirModulo('reportes')">
+    📁 Reportes
+  </button>
+
+  <button onclick="abrirModulo('usuarios')">
+    👥 Usuarios
+  </button>
+
+  <button class="sidebar-logout" onclick="logout()">
+    Cerrar sesión
+  </button>
+
+</aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <div class="topbar">
+
+        <h2 id="tituloModulo">
+          Inicio
+        </h2>
+
+        <p id="subtituloModulo">
+          Panel principal
+        </p>
+
+        <span id="userInfo" class="user-pill"></span>
+
+      </div>
+
+      <section id="moduleView"></section>
+
+    </main>
+
+    <!-- NAV MOVIL -->
+    <nav class="bottom-nav">
+
+      <button onclick="abrirModulo('inicio')">
+        🏠
+        <span>Inicio</span>
+      </button>
+
+      <button onclick="abrirModulo('ingreso')">
+        ➕
+        <span>Ingreso</span>
+      </button>
+
+      <button onclick="abrirModulo('calibracion')">
+        🛞
+        <span>Llantería</span>
+      </button>
+
+      <button onclick="abrirModulo('inventario')">
+        📦
+        <span>Inventario</span>
+      </button>
+
+      <button onclick="abrirModulo('bodega')">
+        🚛
+        <span>Unidad</span>
+      </button>
+
+      <button onclick="abrirModulo('reportes')">
+        📁
+        <span>Reportes</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>

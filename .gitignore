@@ -1,0 +1,11 @@
+node_modules/
+.env
+
+backend/db/*.db
+backend/db/*.db-shm
+backend/db/*.db-wal
+
+backend/reports/
+backend/exports/
+
+npm-debug.log*
