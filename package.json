@@ -13,5 +13,8 @@
     "express": "^4.19.2",
     "pdfkit": "^0.18.0",
     "sqlite3": "^6.0.1"
+  },
+  "engines": {
+  "node": "22.x"
   }
 }
