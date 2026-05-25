@@ -5,7 +5,7 @@ const { generarExcelGeneral } = require('../services/excel.service');
 
 router.get('/', async (req, res) => {
   try {
-    const llantas = await all('SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ""');
+    const llantas = await all("SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ''");
 
     const estados = {};
     const marcas = {};
@@ -64,7 +64,7 @@ router.get('/detalle/:filtro', async (req, res) => {
   try {
     const filtro = req.params.filtro;
 
-    let sql = 'SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ""';
+    let sql = "SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ''";
 
     if (filtro === 'montadas') sql += " AND estado = 'Montada'";
     if (filtro === 'bodega') sql += " AND estado = 'En bodega'";
@@ -92,7 +92,7 @@ router.get('/export/excel', async (req, res) => {
   try {
 
     const llantas = await all(
-      'SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ""'
+      "SELECT * FROM llantas WHERE tm IS NOT NULL AND tm <> ''"
     );
 
     const movimientos = await all(
