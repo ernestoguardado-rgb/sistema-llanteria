@@ -1,39 +1,24 @@
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 
 const dbPath = path.join(__dirname, 'llanteria.db');
-const db = new sqlite3.Database(dbPath);
+const db = new Database(dbPath);
+
+db.pragma('foreign_keys = ON');
 
 function run(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve(this);
-    });
-  });
+  return Promise.resolve(db.prepare(sql).run(params));
 }
 
 function get(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, function (err, row) {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+  return Promise.resolve(db.prepare(sql).get(params));
 }
 
 function all(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, function (err, rows) {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+  return Promise.resolve(db.prepare(sql).all(params));
 }
 
 async function initDatabase() {
-  await run(`PRAGMA foreign_keys = ON`);
-
   await run(`
     CREATE TABLE IF NOT EXISTS usuarios (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -136,11 +121,15 @@ async function initDatabase() {
   await run(`CREATE INDEX IF NOT EXISTS idx_movimientos_tm ON movimientos(tm)`);
   await run(`CREATE INDEX IF NOT EXISTS idx_movimientos_fecha ON movimientos(fecha)`);
 
-  const admin = await get('SELECT id FROM usuarios WHERE usuario = ?', ['admin']);
+  const admin = await get(
+    'SELECT id FROM usuarios WHERE usuario = ?',
+    ['admin']
+  );
 
   if (!admin) {
     await run(
-      `INSERT INTO usuarios (usuario, clave, nombre, rol, estado) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO usuarios (usuario, clave, nombre, rol, estado)
+       VALUES (?, ?, ?, ?, ?)`,
       ['admin', '1234', 'Administrador', 'Administrador', 'Activo']
     );
   }

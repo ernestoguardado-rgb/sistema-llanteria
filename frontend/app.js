@@ -101,12 +101,12 @@ function renderDashboard(d){
     </div>
 
     <div class="dashboard-grid">
-      ${kpi('🛞','Total',d.total,'total')}
+      ${kpi('🛞','Total',d.total || 0,'total')}
       ${kpi('🚛','Montadas',e.Montada||0,'montadas')}
       ${kpi('📦','Bodega',e['En bodega']||0,'bodega')}
       ${kpi('♻️','Reencauche',e['Enviada a reencauche']||e.Reencauche||0,'reencauche')}
       ${kpi('❌','Basura',e.Basura||0,'basura')}
-      ${kpi('⚠️','Críticas',d.criticas,'criticas')}
+      ${kpi('⚠️','Críticas',d.criticas || 0,'criticas')}
     </div>
 
     <div class="dashboard-charts">
@@ -132,7 +132,9 @@ function renderDashboard(d){
   `;
 }
 function kpi(icon,t,v,f){return `<div class="kpi-card" onclick="detalleKPI('${f}')"><div class="kpi-icon">${icon}</div><div><p>${t}</p><h2>${v}</h2></div></div>`;}
-function charts(d){if(chartEstados)chartEstados.destroy();if(chartMarcas)chartMarcas.destroy();chartEstados=new Chart($('chartEstados'),{type:'doughnut',data:{labels:Object.keys(d.estados),datasets:[{data:Object.values(d.estados)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});const top=Object.entries(d.marcas).sort((a,b)=>b[1]-a[1]).slice(0,8);chartMarcas=new Chart($('chartMarcas'),{type:'bar',data:{labels:top.map(x=>x[0]),datasets:[{data:top.map(x=>x[1])}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});}
+function charts(d){ if(!d.estados || !d.marcas){
+  return;
+}if(chartEstados)chartEstados.destroy();if(chartMarcas)chartMarcas.destroy();chartEstados=new Chart($('chartEstados'),{type:'doughnut',data:{labels:Object.keys(d.estados),datasets:[{data:Object.values(d.estados)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});const top=Object.entries(d.marcas).sort((a,b)=>b[1]-a[1]).slice(0,8);chartMarcas=new Chart($('chartMarcas'),{type:'bar',data:{labels:top.map(x=>x[0]),datasets:[{data:top.map(x=>x[1])}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});}
 function tablaMovs(ms){return `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>TM</th><th>Movimiento</th><th>Unidad</th></tr></thead><tbody>${ms.map(m=>`<tr><td>${escapeHtml(m.fecha)}</td><td>${escapeHtml(m.tm)}</td><td>${escapeHtml(m.tipo_movimiento)}</td><td>${escapeHtml(m.unidad)}</td></tr>`).join('')}</tbody></table></div>`;}
 async function detalleKPI(f){
   let modal = $('modalDetalleKPI');
