@@ -105,38 +105,20 @@
     </main>
 
     <!-- NAV MOVIL -->
-    <nav class="bottom-nav">
-
-      <button onclick="abrirModulo('inicio')">
-        🏠
-        <span>Inicio</span>
+    <nav class="mobile-menu">
+      <button class="mobile-menu-btn" onclick="toggleMenuMovil()">
+        ☰ Menú
       </button>
 
-      <button onclick="abrirModulo('ingreso')">
-        ➕
-        <span>Ingreso</span>
-      </button>
-
-      <button onclick="abrirModulo('calibracion')">
-        🛞
-        <span>Llantería</span>
-      </button>
-
-      <button onclick="abrirModulo('inventario')">
-        📦
-        <span>Inventario</span>
-      </button>
-
-      <button onclick="abrirModulo('bodega')">
-        🚛
-        <span>Unidad</span>
-      </button>
-
-      <button onclick="abrirModulo('reportes')">
-        📁
-        <span>Reportes</span>
-      </button>
-
+      <div id="menuMovilPanel" class="mobile-menu-panel hidden">
+        <button onclick="abrirModulo('inicio');toggleMenuMovil()">🏠 Dashboard</button>
+        <button onclick="abrirModulo('ingreso');toggleMenuMovil()">➕ Ingreso</button>
+        <button onclick="abrirModulo('calibracion');toggleMenuMovil()">🛞 Llantería</button>
+        <button onclick="abrirModulo('inventario');toggleMenuMovil()">📦 Inventario</button>
+        <button onclick="abrirModulo('bodega');toggleMenuMovil()">🚛 Unidad</button>
+        <button onclick="abrirModulo('reportes');toggleMenuMovil()">📁 Reportes</button>
+        <button onclick="logout()">🚪 Salir</button>
+      </div>
     </nav>
 
   </div>

@@ -706,7 +706,8 @@ function abrirModalLlantaCal(pos){
 
             <div>
               <label>Medida</label>
-              <input id="modalMedida" value="${escapeHtml(llanta.medida || '')}" disabled>
+              <input id="modalTM" value="${escapeHtml(llanta.tm || '')}" oninput="buscarTMModalCal('${pos}', this.value);mostrarSugerenciasTM('${pos}','modalTM','calibracion')">
+                <div id="sugerenciasTM" class="tm-suggestions"></div>
             </div>
 
             <div>
@@ -1478,4 +1479,45 @@ function permisosRol(){
 
 function puedeAbrirModulo(modulo){
   return permisosRol().includes(modulo);
+}
+
+function toggleMenuMovil(){
+  const panel = $('menuMovilPanel');
+  if(panel) panel.classList.toggle('hidden');
+}
+
+async function mostrarSugerenciasTM(pos, inputId, modo){
+  const q = $(inputId)?.value.trim().toLowerCase();
+  const box = $('sugerenciasTM');
+  if(!box || !q || q.length < 1){
+    if(box) box.innerHTML = '';
+    return;
+  }
+
+  const r = await api('/api/tires');
+  if(!r.ok) return;
+
+  const lista = r.llantas
+    .filter(l =>
+      String(l.tm || '').toLowerCase().includes(q) ||
+      String(l.numero_llanta || '').toLowerCase().includes(q) ||
+      String(l.marca || '').toLowerCase().includes(q)
+    )
+    .slice(0, 8);
+
+  box.innerHTML = lista.map(l => `
+    <button type="button" onclick="seleccionarTMModal('${pos}','${escapeHtml(l.tm)}','${modo}')">
+      <b>TM ${escapeHtml(l.tm)}</b>
+      <small>${escapeHtml(l.numero_llanta)} · ${escapeHtml(l.marca)} · ${escapeHtml(l.estado)}</small>
+    </button>
+  `).join('');
+}
+
+async function seleccionarTMModal(pos, tm, modo){
+  if(modo === 'calibracion'){
+    $('modalTM').value = tm;
+    await buscarTMModalCal(pos, tm);
+  }
+  const box = $('sugerenciasTM');
+  if(box) box.innerHTML = '';
 }
