@@ -123,17 +123,6 @@ router.get('/export/excel', async (req, res) => {
   }
 });
 
-router.get('/admin/importar-llantas', async (req, res) => {
-  try {
-    const token = req.query.token;
-
-    if(token !== 'IMPORTAR2026'){
-      return res.json({
-        ok:false,
-        message:'Token no autorizado.'
-      });
-    }
-
     const excelPath = path.join(
       __dirname,
       '../../llantas_depuradas_TM_medida_marca_tipo.xlsx'
