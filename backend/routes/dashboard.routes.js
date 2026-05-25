@@ -1,5 +1,9 @@
+const path = require('path');
+const XLSX = require('xlsx');
+const { run, get } = require('../db/database');
+const { generarId } = require('../services/id.service');
 const express = require('express');
-const { all } = require('../db/database');
+const { all, run, get } = require('../db/database');
 const router = express.Router();
 const { generarExcelGeneral } = require('../services/excel.service');
 
@@ -112,6 +116,131 @@ router.get('/export/excel', async (req, res) => {
 
   } catch (e) {
 
+    res.json({
+      ok:false,
+      message:e.message
+    });
+  }
+});
+
+router.get('/admin/importar-llantas', async (req, res) => {
+  try {
+    const token = req.query.token;
+
+    if(token !== 'IMPORTAR2026'){
+      return res.json({
+        ok:false,
+        message:'Token no autorizado.'
+      });
+    }
+
+    const excelPath = path.join(
+      __dirname,
+      '../../llantas_depuradas_TM_medida_marca_tipo.xlsx'
+    );
+
+    const wb = XLSX.readFile(excelPath);
+    const sheet = wb.Sheets['LLANTAS_DEPURADAS'];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    let insertadas = 0;
+    let duplicadas = 0;
+    let errores = 0;
+
+    for(const row of rows){
+      try{
+        const tm = String(row.TM || '').trim();
+        const medida = String(row.Medida || '').trim();
+        const marca = String(row.Marca || '').trim();
+        const tipo = String(row.Tipo_Llanta || 'Nueva').trim();
+
+        if(!tm || !medida || !marca){
+          errores++;
+          continue;
+        }
+
+        const existe = await get(
+          'SELECT id FROM llantas WHERE LOWER(tm)=LOWER(?)',
+          [tm]
+        );
+
+        if(existe){
+          duplicadas++;
+          continue;
+        }
+
+        const fecha = new Date().toISOString();
+        const idLlanta = generarId('LL');
+        const idMov = generarId('MOV');
+
+        await run(`
+          INSERT INTO llantas
+          (
+            id_llanta,
+            numero_llanta,
+            tm,
+            marca,
+            tipo_llanta,
+            estado,
+            ubicacion_actual,
+            fecha_ingreso,
+            fecha_ultimo_movimiento,
+            observacion,
+            id_ultimo_movimiento
+          )
+          VALUES (?, ?, ?, ?, ?, 'En bodega', 'Bodega', ?, ?, ?, ?)
+        `, [
+          idLlanta,
+          medida,
+          tm,
+          marca,
+          tipo,
+          fecha,
+          fecha,
+          'Importado desde Excel en Render',
+          idMov
+        ]);
+
+        await run(`
+          INSERT INTO movimientos
+          (
+            id_movimiento,
+            fecha,
+            id_llanta,
+            numero_llanta,
+            tm,
+            tipo_movimiento,
+            origen,
+            destino,
+            observacion
+          )
+          VALUES (?, ?, ?, ?, ?, 'Importación inicial', 'Excel', 'Bodega', ?)
+        `, [
+          idMov,
+          fecha,
+          idLlanta,
+          medida,
+          tm,
+          'Carga masiva desde Excel en Render'
+        ]);
+
+        insertadas++;
+
+      }catch(errFila){
+        errores++;
+      }
+    }
+
+    res.json({
+      ok:true,
+      message:'Importación finalizada.',
+      totalExcel: rows.length,
+      insertadas,
+      duplicadas,
+      errores
+    });
+
+  } catch (e) {
     res.json({
       ok:false,
       message:e.message
