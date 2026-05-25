@@ -1,11 +1,11 @@
+const express = require('express');
 const path = require('path');
 const XLSX = require('xlsx');
-const { run, get } = require('../db/database');
-const { generarId } = require('../services/id.service');
-const express = require('express');
 const { all, run, get } = require('../db/database');
-const router = express.Router();
+const { generarId } = require('../services/id.service');
 const { generarExcelGeneral } = require('../services/excel.service');
+
+const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
