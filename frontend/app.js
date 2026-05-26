@@ -693,56 +693,99 @@ function abrirModalLlantaCal(pos){
         </div>
 
         <div class="form-grid">
+
           <div>
             <label>Sección</label>
             <input value="${escapeHtml(seccionPorPosicion(pos))}" disabled>
           </div>
 
           ${tipoRegistro === 'Calibracion' ? `
+
             <div>
               <label>TM</label>
-              <input id="modalTM" list="tmList" value="${escapeHtml(llanta.tm || '')}" oninput="buscarTMModalCal('${pos}', this.value)">
+              <input
+                id="modalTM"
+                value="${escapeHtml(llanta.tm || '')}"
+                oninput="buscarTMModalCal('${pos}', this.value);mostrarSugerenciasTM('${pos}','modalTM','calibracion')"
+                placeholder="Buscar TM"
+              >
+              <div id="sugerenciasTM" class="tm-suggestions"></div>
             </div>
 
             <div>
               <label>Medida</label>
-              <input id="modalTM" value="${escapeHtml(llanta.tm || '')}" oninput="buscarTMModalCal('${pos}', this.value);mostrarSugerenciasTM('${pos}','modalTM','calibracion')">
-                <div id="sugerenciasTM" class="tm-suggestions"></div>
+              <input
+                id="modalMedida"
+                value="${escapeHtml(llanta.medida || '')}"
+                disabled
+              >
             </div>
 
             <div>
               <label>Marca</label>
-              <input id="modalMarca" value="${escapeHtml(llanta.marca || '')}" disabled>
+              <input
+                id="modalMarca"
+                value="${escapeHtml(llanta.marca || '')}"
+                disabled
+              >
             </div>
 
             <div>
               <label>PSI</label>
-              <input id="modalPSI" type="number" value="${escapeHtml(llanta.psi || '')}">
+              <input
+                id="modalPSI"
+                type="number"
+                value="${escapeHtml(llanta.psi || '')}"
+              >
             </div>
 
             <div>
               <label>Profundidad</label>
-              <input id="modalProf" type="number" value="${escapeHtml(llanta.profundidad || '')}">
+              <input
+                id="modalProf"
+                type="number"
+                value="${escapeHtml(llanta.profundidad || '')}"
+              >
             </div>
+
           ` : `
+
             <div>
               <label>TM desmontado</label>
-              <input id="modalTMDesmontado" list="tmList" value="${escapeHtml(llanta.tmDesmontado || '')}" oninput="buscarTMDesmontadoModal('${pos}', this.value)">
+              <input
+                id="modalTMDesmontado"
+                list="tmList"
+                value="${escapeHtml(llanta.tmDesmontado || '')}"
+                oninput="buscarTMDesmontadoModal('${pos}', this.value)"
+              >
             </div>
 
             <div>
               <label>Llanta desmontada</label>
-              <input id="modalDesmontada" value="${escapeHtml(llanta.desmontada || '')}" disabled>
+              <input
+                id="modalDesmontada"
+                value="${escapeHtml(llanta.desmontada || '')}"
+                disabled
+              >
             </div>
 
             <div>
               <label>TM montado</label>
-              <input id="modalTMMontado" list="tmList" value="${escapeHtml(llanta.tmMontado || '')}" oninput="buscarTMMontadoModal('${pos}', this.value)">
+              <input
+                id="modalTMMontado"
+                list="tmList"
+                value="${escapeHtml(llanta.tmMontado || '')}"
+                oninput="buscarTMMontadoModal('${pos}', this.value)"
+              >
             </div>
 
             <div>
               <label>Llanta montada</label>
-              <input id="modalMontada" value="${escapeHtml(llanta.montada || '')}" disabled>
+              <input
+                id="modalMontada"
+                value="${escapeHtml(llanta.montada || '')}"
+                disabled
+              >
             </div>
 
             <div>
@@ -766,18 +809,26 @@ function abrirModalLlantaCal(pos){
                 <option ${llanta.destino==='Dañada'?'selected':''}>Dañada</option>
               </select>
             </div>
+
           `}
 
           <div class="full">
             <label>Observación</label>
             <textarea id="modalObs">${escapeHtml(llanta.observacion || '')}</textarea>
           </div>
+
         </div>
 
         <div class="form-actions">
-          <button class="btn-secondary" onclick="eliminarLlantaPosicion('${pos}')">Eliminar</button>
-          <button class="btn-primary" onclick="guardarLlantaModalCal('${pos}')">Guardar posición</button>
+          <button class="btn-secondary" onclick="eliminarLlantaPosicion('${pos}')">
+            Eliminar
+          </button>
+
+          <button class="btn-primary" onclick="guardarLlantaModalCal('${pos}')">
+            Guardar posición
+          </button>
         </div>
+
       </div>
     </div>
   `;
